@@ -5,7 +5,7 @@ public class Main {
     static int n;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        StringBuilder sb = new StringBuilder();
         String s = br.readLine();
         int[][] dp = new int[26][s.length()+1];
         dp[s.charAt(0) - 'a'][1]++;
@@ -29,7 +29,8 @@ public class Main {
             String alpha = st.nextToken();
             int start = Integer.parseInt(st.nextToken());
             int end = Integer.parseInt(st.nextToken());
-            System.out.println(dp[alpha.charAt(0) - 'a'][end+1] - dp[alpha.charAt(0) - 'a'][start]);
+            sb.append(dp[alpha.charAt(0) - 'a'][end+1] - dp[alpha.charAt(0) - 'a'][start] + "\n");
         }
+        System.out.println(sb);
     }
 }
