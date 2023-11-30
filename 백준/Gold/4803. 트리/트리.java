@@ -4,8 +4,6 @@ import java.util.*;
 
 
 public class Main {
-    static List<Integer>[] graph;
-    static boolean[] visit;
     static int n;
     static int m;
     public static void main(String[] args) throws IOException {
@@ -19,29 +17,29 @@ public class Main {
             if (n == 0 && m == 0) {
                 break;
             }
-            graph = new ArrayList[n+1];
+            int[] parents = new int[n+1];
             for (int i = 1; i < n+1; i++) {
-                graph[i] = new ArrayList<>();
+                parents[i] = i;
             }
-            visit = new boolean[n+1];
+
             for (int i = 0; i < m; i++) {
                 st = new StringTokenizer(br.readLine());
                 int u = Integer.parseInt(st.nextToken());
                 int v = Integer.parseInt(st.nextToken());
-                graph[u].add(v);
-                graph[v].add(u);
+                union(parents, u, v);
             }
 
-            int res = 0;
+            Set<Integer> set = new HashSet<>();
             for (int i = 1; i < n+1; i++) {
-                if (visit[i] == false) {
-                    res += bfs(i);
+                int temp = find(parents, i);
+                if (temp != 0) {
+                    set.add(temp);
                 }
             }
 
-            if (res >= 2) {
-                System.out.println(String.format("Case %d: A forest of %s trees.", t, res));
-            } else if (res == 1) {
+            if (set.size() >= 2) {
+                System.out.println(String.format("Case %d: A forest of %s trees.", t, set.size()));
+            } else if (set.size() == 1) {
                 System.out.println(String.format("Case %d: There is one tree.", t));
             } else {
                 System.out.println(String.format("Case %d: No trees.", t));
@@ -50,29 +48,24 @@ public class Main {
         }
     }
 
+    static int find(int[] parents, int x) {
+        if (parents[x] != x) {
+            parents[x] = find(parents, parents[x]);
+        }
+        return parents[x];
+    }
 
 
-    static int bfs(int v) {
-        Queue<Integer> q = new LinkedList<>();
-        visit[v] = true;
-        int node = 0;
-        int edge = 0;
-        q.offer(v);
-        while (!q.isEmpty()) {
-            int cur = q.poll();
-            node++;
-            for (int i = 0; i < graph[cur].size(); i++) {
-                int next = graph[cur].get(i);
-                edge++;
-                if (visit[next] == false) {
-                    visit[next] = true;
-                    q.add(next);
-                }
-            }
+    static void union(int[] parents, int x, int y) {
+        x = find(parents, x);
+        y = find(parents, y);
+        if (x < y) {
+            parents[y] = x;
+        } else if (x > y) {
+            parents[x] = y;
+        } else {
+            parents[x] = 0;
+            parents[y] = 0;
         }
-        if (node == (edge / 2) + 1) {
-            return 1;
-        }
-        return 0;
     }
 }
